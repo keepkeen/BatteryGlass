@@ -79,7 +79,6 @@
   <tr>
     <td align="center">自动聚焦最低电量设备</td>
     <td align="center">横向概览常用设备</td>
-    <td align="center">双栏展示完整设备阵容</td>
   </tr>
 </table>
 
