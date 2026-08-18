@@ -71,12 +71,10 @@
   <tr>
     <th align="center">小型 · 1 台</th>
     <th align="center">中型 · 最多 4 台</th>
-    <th align="center">大型 · 最多 8 台</th>
   </tr>
   <tr>
     <td align="center" valign="middle"><img src="docs/screenshots/widget-small.png" width="148" alt="BatteryGlass 小型小组件"></td>
     <td align="center" valign="middle"><img src="docs/screenshots/widget-medium.png" width="360" alt="BatteryGlass 中型小组件"></td>
-    <td align="center" valign="middle"><img src="docs/screenshots/widget-large.png" width="296" alt="BatteryGlass 大型小组件"></td>
   </tr>
   <tr>
     <td align="center">自动聚焦最低电量设备</td>
