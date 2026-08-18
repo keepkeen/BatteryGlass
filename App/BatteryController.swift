@@ -100,8 +100,8 @@ final class BatteryController: ObservableObject {
         phase = devices.isEmpty ? .empty : .ready
 
         do {
-            try SharedSnapshotStore.save(newSnapshot)
-            if contentChanged {
+            let createdWidgetCompatibilityFile = try SharedSnapshotStore.save(newSnapshot)
+            if contentChanged || createdWidgetCompatibilityFile {
                 WidgetCenter.shared.reloadTimelines(ofKind: BatteryWidgetConstants.kind)
             }
         } catch {

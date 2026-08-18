@@ -57,7 +57,7 @@ struct MenuBarContentView: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 10)
                 }
-                .frame(maxHeight: 430)
+                .frame(height: deviceListHeight)
             }
 
             footer
@@ -155,6 +155,17 @@ struct MenuBarContentView: View {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .short
         return formatter.localizedString(for: controller.snapshot.generatedAt, relativeTo: .now)
+    }
+
+    private var deviceListHeight: CGFloat {
+        let count = controller.snapshot.devices.count
+        let rowHeight: CGFloat = 72
+        let rowSpacing: CGFloat = 8
+        let verticalPadding: CGFloat = 20
+        let contentHeight = verticalPadding
+            + CGFloat(count) * rowHeight
+            + CGFloat(max(count - 1, 0)) * rowSpacing
+        return min(contentHeight, 430)
     }
 }
 

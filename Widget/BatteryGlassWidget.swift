@@ -44,7 +44,7 @@ struct BatteryGlassWidget: Widget {
         }
         .configurationDisplayName("设备电量")
         .description("在桌面快速查看 Mac、iPhone、Apple Watch、AirPods 与外设电量。")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
@@ -56,10 +56,15 @@ private struct BatteryWidgetView: View {
         Group {
             if entry.snapshot.devices.isEmpty {
                 WidgetEmptyView()
-            } else if family == .systemSmall {
-                SmallBatteryWidget(snapshot: entry.snapshot)
             } else {
-                MediumBatteryWidget(snapshot: entry.snapshot)
+                switch family {
+                case .systemSmall:
+                    SmallBatteryWidget(snapshot: entry.snapshot)
+                case .systemLarge:
+                    LargeBatteryWidget(snapshot: entry.snapshot)
+                default:
+                    MediumBatteryWidget(snapshot: entry.snapshot)
+                }
             }
         }
         .accessibilityElement(children: .contain)
@@ -134,24 +139,101 @@ private struct MediumBatteryWidget: View {
                 Label("设备电量", systemImage: "bolt.circle.fill")
                     .font(.headline)
                 Spacer()
+                if snapshot.devices.count > 4 {
+                    Text("+\(snapshot.devices.count - 4)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
                 Text(snapshot.generatedAt, style: .relative)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
 
-            HStack(spacing: 10) {
-                ForEach(snapshot.devices.prefix(3)) { device in
+            HStack(spacing: 8) {
+                ForEach(snapshot.devices.prefix(4)) { device in
                     MediumDeviceTile(device: device)
-                }
-
-                if snapshot.devices.count > 3 {
-                    Text("+\(snapshot.devices.count - 3)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 22)
                 }
             }
         }
+    }
+}
+
+private struct LargeBatteryWidget: View {
+    let snapshot: BatterySnapshot
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 10),
+        GridItem(.flexible(), spacing: 10),
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Label("设备电量", systemImage: "bolt.circle.fill")
+                    .font(.headline)
+
+                Text("\(snapshot.devices.count) 台")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                if snapshot.devices.count > 8 {
+                    Text("另有 \(snapshot.devices.count - 8) 台")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+
+                Text(snapshot.generatedAt, style: .relative)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 10) {
+                ForEach(snapshot.devices.prefix(8)) { device in
+                    LargeDeviceTile(device: device)
+                }
+            }
+        }
+    }
+}
+
+private struct LargeDeviceTile: View {
+    let device: BatteryDevice
+
+    var body: some View {
+        HStack(spacing: 10) {
+            WidgetBatteryRing(device: device, diameter: 42)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(device.name)
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+
+                HStack(alignment: .firstTextBaseline, spacing: 5) {
+                    Text(device.clampedLevel.map { "\($0)%" } ?? "--")
+                        .font(.system(.headline, design: .rounded, weight: .bold))
+                        .monospacedDigit()
+
+                    if device.status.isPowered {
+                        Image(systemName: "bolt.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.green)
+                    } else {
+                        Text(device.status.title)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+        .padding(8)
+        .background(.primary.opacity(0.055), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }
 
@@ -265,6 +347,12 @@ private enum WidgetBatteryPalette {
 }
 
 #Preview(as: .systemMedium) {
+    BatteryGlassWidget()
+} timeline: {
+    BatteryWidgetEntry(date: .now, snapshot: .preview)
+}
+
+#Preview(as: .systemLarge) {
     BatteryGlassWidget()
 } timeline: {
     BatteryWidgetEntry(date: .now, snapshot: .preview)

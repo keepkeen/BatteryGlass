@@ -8,7 +8,7 @@ BatteryGlass is a native macOS 26 menu bar utility and desktop widget for viewin
 
 ## Install
 
-The current `v0.1.0` preview is universal (`arm64` and `x86_64`) and ad-hoc signed. It is not Apple-notarized yet because the project does not currently have a Developer ID certificate.
+The current `v0.1.1` preview is universal (`arm64` and `x86_64`) and ad-hoc signed. It is not Apple-notarized yet because the project does not currently have a Developer ID certificate.
 
 Install from the project Homebrew tap:
 
@@ -25,7 +25,7 @@ After launching, use the menu bar battery icon. To add the desktop widget, Contr
 ## Architecture
 
 - The `LSUIElement` host app performs all device sampling and owns the menu bar UI.
-- A WidgetKit extension renders a small or medium desktop widget from a shared App Group snapshot.
+- A WidgetKit extension renders small, medium, and large desktop widgets. Medium shows up to 4 devices and large shows up to 8.
 - Mac battery data comes from IOPowerSources.
 - Trusted mobile-device data is read through the system MobileDevice framework, with Apple Watch data obtained through a connected iPhone.
 - AirPods and Bluetooth data combines `system_profiler`, IOBluetooth, IORegistry, recent BatteryCenter/bluetoothd events, and a short CoreBluetooth scan.
