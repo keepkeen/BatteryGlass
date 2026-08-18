@@ -13,11 +13,12 @@ The current `v0.1.0` preview is universal (`arm64` and `x86_64`) and ad-hoc sign
 Install from the project Homebrew tap:
 
 ```sh
-brew install --cask --no-quarantine keepkeen/batteryglass/batteryglass
+brew install --cask keepkeen/batteryglass/batteryglass
+xattr -dr com.apple.quarantine /Applications/BatteryGlass.app
 open -a BatteryGlass
 ```
 
-`--no-quarantine` is required only for this ad-hoc-signed preview. If you do not want to bypass Gatekeeper for the downloaded build, build from source instead. A future Developer ID release will remove this requirement.
+The targeted `xattr` command is required only for this ad-hoc-signed preview. If you do not want to bypass Gatekeeper for the downloaded build, build from source instead. A future Developer ID release will remove this requirement.
 
 After launching, use the menu bar battery icon. To add the desktop widget, Control-click the desktop, choose **Edit Widgets**, search for **BatteryGlass** or **设备电量**, and select a size.
 
